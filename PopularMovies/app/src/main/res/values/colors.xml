@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--default-->
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+
+    <!--modified-->
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#1D1D1D</color>
+    <color name="colorAccentDark">#980184bf</color>
+    <color name="colorAccent">#04A3EB</color>
+    <color name="rate">#F7C625</color>
+    <color name="textColor">#B9B9B9</color>
+    <color name="rv_color">#f3f3f3</color>
+    <color name="gray">#c4c4c4</color>
+    <color name="light">#212121</color>
+    <color name="v_color">#999</color>
+    <color name="white">#cbffffff</color>
+
+</resources>

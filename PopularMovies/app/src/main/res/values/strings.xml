@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <!--Strings added-->
+    <string name="detail_page_name">Movie Details</string>
+    <string name="refresh">Refresh</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top Rated </string>
+    <string name="top_rates">Top Rated </string>
+    <string name="overview">Deadpool tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.</string>
+    <string name="image_view_for_movie_poster">Image View For Movie Poster</string>
+    <string name="synopsis">SYNOPSIS</string>
+    <string name="TOP_RATED_ORDER">vote_average.desc</string>
+    <string name="DEFAULT_ORDER">popularity.desc</string>
+    <string name="ORDER_KEY">sort_by</string>
+    <string name="cont">I was not a Deadpool fan and I\'m still not, but like any superhero films I\'d pleasure watching it. The other reason was, we had other superheroes in our time, so this guy is kind of new to me. It was a stunning launch to the big screen for the Deadpool as well as for this new director. This film was merely an introduction tale than a fully stretched story. Like how a human becomes a mutant and later who seeks a revenge for ruining his natural life. But it yet to explain a couple of things and I hope it all will be revealed in its s... read the rest.r</string>
+    <string name="videos">VIDEOS</string>
+    <string name="reviews">REVIEWS</string>
+    <string name="no_videos">No Videos</string>
+    <string name="no_reviews">No Reviews</string>
+    <string name="size_attr">Size</string>
+    <string name="ppi_attr">P</string>
+</resources>

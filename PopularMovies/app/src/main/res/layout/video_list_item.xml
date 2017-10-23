@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/cardview_light_background"
+    android:padding="@dimen/gap"
+    android:orientation="vertical"
+    android:layout_width="150dp"
+    android:layout_height="170dp">
+
+
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/trailer_container"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="@dimen/gap"/>
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play"/>
+
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Trailer"
+        android:maxLines="1" />
+
+
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1080P"/>
+
+
+
+
+</LinearLayout>
