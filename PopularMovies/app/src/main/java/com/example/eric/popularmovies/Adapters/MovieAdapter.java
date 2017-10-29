@@ -22,7 +22,8 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     List<MovieModel> movies;
     Context context;
-    final ListItemClickListener  mClickItemListener;
+    final ListItemClickListener mClickItemListener;
+
 
     //Constructor
     public MovieAdapter(List<MovieModel> movies, Context context, ListItemClickListener mClickItemListener) {
@@ -31,15 +32,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         this.mClickItemListener = mClickItemListener;
     }
 
-    public interface ListItemClickListener{
-         void OnListItemClick(int position,List<MovieModel> movieModels);
+
+    public interface ListItemClickListener {
+        void OnListItemClick(int position, List<MovieModel> movieModels, ImageView poster);
 
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster,parent,false);
+                .inflate(R.layout.movie_poster, parent, false);
         return new MovieViewHolder(view);
     }
 
@@ -48,34 +50,42 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         MovieModel object = movies.get(position);
         String url = String.valueOf((NetworkUtils.buildImageUrl(object.getPosterPath())));
         Picasso.with(context).load(url).placeholder(R.drawable.poster_placeholder).error(R.drawable.error_placeholder).into(holder.movie_poster);
+        //ViewCompat.setTransitionName(holder.movie_poster, "transitionName");
     }
 
     @Override
-    public int getItemCount() {return movies.size();}
+    public int getItemCount() {
+        return movies == null ? 0 : movies.size();
+    }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movie_poster;
         ImageView detail_poster;
 
 
-        public MovieViewHolder (final View itemView) {
+        public MovieViewHolder(final View itemView) {
             super(itemView);
-            movie_poster =  itemView.findViewById(R.id.poster_main);
-            detail_poster =itemView.findViewById(R.id.detail_poster);
+            movie_poster = itemView.findViewById(R.id.poster_main);
+            movie_poster.setTransitionName("transitionName");
+            detail_poster = itemView.findViewById(R.id.detail_poster);
             itemView.setOnClickListener(this);
 
         }
 
-
-
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            List<MovieModel> data =movies;
-            mClickItemListener.OnListItemClick(position,data);
-
+            List<MovieModel> data = movies;
+            mClickItemListener.OnListItemClick(position, data, movie_poster);
 
         }
+
+
+
+    }
+
+    public  void addto(List<MovieModel> mod) {
+        movies = mod;
     }
 
 }

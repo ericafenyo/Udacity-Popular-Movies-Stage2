@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_coordinator"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true">
 
             <!--backdrop-->
@@ -32,14 +32,8 @@
                     android:fitsSystemWindows="true"
                     tools:src="@drawable/poster_placeholder" />
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/detail_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin">
-                </android.support.v7.widget.Toolbar>
+              <include layout="@layout/toolbar"
+                  android:id="@+id/detail_toolbar"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -54,7 +48,6 @@
         app:layout_anchorGravity="bottom|right|end"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_fav"/>
-
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/detail_nested_ScrollView"
@@ -82,11 +75,9 @@
                         android:layout_width="100dp"
                         android:layout_height="150dp"
                         android:scaleType="centerCrop"
+                        android:transitionName="poster"
                         tools:src="@drawable/poster_placeholder"/>
-
-
                 </android.support.v7.widget.CardView>
-
 
                 <!--Release Date-->
                 <TextView
@@ -94,6 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/space"
+                    android:layout_marginBottom="4dp"
                     android:layout_above="@+id/movie_title"
                     android:layout_toEndOf="@id/detail_poster_card"
                     android:textColor="@color/textColor"
@@ -117,7 +109,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:text="Blade Runner 2049" />
-
 
                 <!--Rating icon-->
                 <ImageView
@@ -173,7 +164,6 @@
                     android:paddingRight="16dp"
                     android:textColor="#B9B9B9"
                     tools:text="@string/overview" />
-
 
                 <ScrollView
                     android:layout_below="@id/movie_overview"

@@ -81,34 +81,38 @@ public class ObjectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    //TODO: comment this method
+    //Video ViewHolder
     public void bindVideo(MyVideosViewHolder vidHolder){
-        VideoAdapter adapter = new VideoAdapter(context, (List<VideoModel>) mdata.get(0), this);
+        VideoAdapter adapter = new VideoAdapter(context, (List<VideoModel>) mdata.get(0),this);
         vidHolder.vRecyclerView.setAdapter(adapter);
         vidHolder.vRecyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
         vidHolder.vRecyclerView.setHasFixedSize(true);
         vidHolder.vRecyclerView.setNestedScrollingEnabled(false);
+        vidHolder.vRecyclerView.setFocusable(false);
     }
 
-    //TODO: comment this method
+    //Reviews ViewHolder
     public void bindReviews(MyReviewViewHolder revHolder){
         ReviewAdapter adapter = new ReviewAdapter(context, (List<ReviewModel>) mdata.get(1));
         revHolder.rRecyclerView.setAdapter(adapter);
         revHolder.rRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         revHolder.rRecyclerView.setHasFixedSize(true);
         revHolder.rRecyclerView.setNestedScrollingEnabled(false);
+        revHolder.rRecyclerView.setFocusable(false);
     }
 
     @Override
     public int getItemCount() {
-        return mdata.size();
+        return mdata == null ? 0 : mdata.size();
     }
+
+
 
     @Override
     public void onListItemClick(int position, List<VideoModel> models) {
         VideoModel model = models.get(position);
         String youTubeUrl = String.valueOf(NetworkUtils.buildYoutubeUrl(model.getKey()));
-        Intent appIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("vnd.youtube:" + model.getKey()));
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + model.getKey()));
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(youTubeUrl + id));
             try {

@@ -20,11 +20,8 @@ import okhttp3.Response;
  * Created by eric on 01/10/2017.
  */
 
-//TODO: comment your codes
 public class NetworkUtils {
     private static OkHttpClient client = new OkHttpClient();
-
-
 
     //Movie variables
     private static final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/";
@@ -45,18 +42,15 @@ public class NetworkUtils {
     private static final String YOUTUBE_THL_BASE_URL = "http://img.youtube.com/vi/";
     private static final String YOUTUBE_THL_PATH ="mqdefault.jpg";
 
-
-
-
     //Constructors
     public NetworkUtils() {
         //should be empty
     }
 
     /**
-     * @description returns top rated movie URL
-     *
-     *
+     * @param page the request page number
+     * @param id  the Movie id
+     * @description returns URL of movie reviews
      */
     public static URL buildReviewsUrl(int id,int page) {
         Uri uri = Uri.parse(MOVIE_BASE_URL).buildUpon()
@@ -75,7 +69,10 @@ public class NetworkUtils {
         return url;
     }
 
-
+    /**
+     * @param key the youtube video key (https://www.youtube.com/watch?v="key")
+     * @description returns youtube video Url
+     */
     public static URL buildYoutubeUrl( String key) {
         Uri uri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
                 .appendQueryParameter(YOUTUBE_QUERY,key)
@@ -89,6 +86,10 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * @param key the youtube video key (https://www.youtube.com/watch?v="key")
+     * @description returns Url  : youtube video thumbnail
+     */
     public static URL buildYoutubeTHLUrl( String key) {
         Uri uri = Uri.parse(YOUTUBE_THL_BASE_URL).buildUpon()
                .appendPath(key)
@@ -104,8 +105,8 @@ public class NetworkUtils {
     }
 
     /**
-     * @description returns most porpular movie URL
-     *
+     * @param id the movie Id
+     * @description returns movie trailer URL
      */
     public static URL buildVideosUrl(int id) {
         Uri uri = Uri.parse(MOVIE_BASE_URL).buildUpon()
@@ -113,7 +114,6 @@ public class NetworkUtils {
                 .appendPath(String.valueOf(id))
                 .appendPath(VIDEOS_KEY)
                 .appendQueryParameter(API_QUERY,BuildConfig.TMDB_API_KEY)
-
                 .build();
         URL url = null;
         try {
@@ -124,9 +124,10 @@ public class NetworkUtils {
         return url;
     }
 
-
-
-
+    /**
+     * @param id the movie Id
+     * @description returns casts URL
+     */
     public static URL buildCastUrl(int id) {
         Uri uri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendPath(TYPE)
@@ -205,6 +206,11 @@ public class NetworkUtils {
         }
     }
 
+    /** @description returns raw json data
+     * @param url JSON url
+     * NB: slower than raw HttpURLConnection
+     */
+
     public static String getHttpResponses(URL url) throws IOException{
         Request request = new Request.Builder()
                 .url(url)
@@ -214,4 +220,5 @@ public class NetworkUtils {
             return response.body().string();
         }
     }
+
 }

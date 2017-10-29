@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_coordinator"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:fitsSystemWindows="true"
+        android:layout_height="200dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:expanded="true">
 
@@ -32,14 +31,8 @@
                     android:fitsSystemWindows="true"
                     tools:src="@drawable/poster_placeholder" />
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/detail_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin">
-                </android.support.v7.widget.Toolbar>
+              <include layout="@layout/toolbar"
+                  android:id="@+id/detail_toolbar"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -49,9 +42,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/side_gap"
-        app:layout_anchor="@id/appbar_layout"
-        app:layout_anchorGravity="bottom|right|end"
+        android:layout_margin="@dimen/space"
+        app:layout_anchor="@id/detail_nested_ScrollView"
+        app:layout_anchorGravity="top|right|end"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_fav"/>
 
@@ -60,6 +53,9 @@
         android:id="@+id/detail_nested_ScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/side_gap"
+        android:layout_marginEnd="@dimen/side_gap"
+        app:behavior_overlapTop="64dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -75,18 +71,18 @@
                     android:id="@+id/detail_poster_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/side_gap"
                     android:layout_marginEnd="@dimen/space"
-                    android:layout_marginStart="@dimen/side_gap">
+                  >
                     <ImageView
                         android:id="@+id/detail_poster"
-                        android:layout_width="100dp"
-                        android:layout_height="150dp"
+                        android:layout_width="120dp"
+                        android:layout_height="170dp"
                         android:scaleType="centerCrop"
+                        android:transitionName="poster"
                         tools:src="@drawable/poster_placeholder"/>
 
-
                 </android.support.v7.widget.CardView>
-
 
                 <!--Release Date-->
                 <TextView
@@ -94,11 +90,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/space"
+                    android:layout_marginBottom="4dp"
                     android:layout_above="@+id/movie_title"
                     android:layout_toEndOf="@id/detail_poster_card"
                     android:textColor="@color/textColor"
                     tools:text="12-05-2018" />
-
 
                 <!--I kept the deprecated "singleLine" attr. for moving overflow Text functionality because I couldn't achieve it with maxLine-->
                 <!--Original Title-->
@@ -173,7 +169,6 @@
                     android:paddingRight="16dp"
                     android:textColor="#B9B9B9"
                     tools:text="@string/overview" />
-
 
                 <ScrollView
                     android:layout_below="@id/movie_overview"

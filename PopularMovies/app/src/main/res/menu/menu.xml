@@ -2,12 +2,41 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+
+    <item android:id="@+id/sort_main"
+        android:title="@string/sort"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_sort">
+
+        <menu>
+
+            <item
+                android:id="@+id/sort_popular"
+                android:title="@string/popular"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/sort_top_rated"
+                android:title="@string/top_rated"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/fav"
+                android:title="@string/fav"
+                app:showAsAction="never"/>
+
+
+
+        </menu>
+
+    </item>
+
+
+
+
+
     <item
-        android:id="@+id/sort_popular"
-        android:title="@string/popular"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/sort_top_rated"
-        android:title="@string/top_rated"
+        android:id="@+id/about"
+        android:title="@string/about"
         app:showAsAction="never"/>
 </menu>

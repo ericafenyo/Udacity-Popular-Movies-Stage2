@@ -3,10 +3,12 @@ package com.example.eric.popularmovies.Utils;
 /**
  *
  * Created by eric on 17/10/2017.
+ * converts genre id to Human format
  */
 
 public class GenreUtils {
 
+    //@params: genreID --- TMDb genre Id
     public String convertGengre(int genreID){
 
         switch (genreID){

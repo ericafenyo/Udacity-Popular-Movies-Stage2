@@ -2,15 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#333"
-    android:layout_margin="5dp"
     android:padding="1dp">
 
     <ImageView
         android:id="@+id/poster_main"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:src="@drawable/poster_placeholder"
+        android:layout_height="275dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image_view_for_movie_poster" />
-
 </FrameLayout>

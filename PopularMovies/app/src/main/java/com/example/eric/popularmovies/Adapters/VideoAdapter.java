@@ -1,10 +1,12 @@
 package com.example.eric.popularmovies.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,22 +65,38 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
         private TextView name;
         private TextView size;
         private ImageView videoContainer;
+        Button shareBn;
 
         public VideoAdapterViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             size =  itemView.findViewById(R.id.size);
             videoContainer = itemView.findViewById(R.id.trailer_container);
+
+            shareBn = itemView.findViewById(R.id.share_video);
             itemView.setOnClickListener(this);
+            shareBn.setOnClickListener(this);
 
         }
 
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition();
-            List<VideoModel> data = mData;
-            itemClickListener.onListItemClick(position,data);
+            if (view.getId() == shareBn.getId()){
+                VideoModel model = mData.get(getAdapterPosition());
+                String key = model.getKey();
+                URL youtubeUrl = NetworkUtils.buildYoutubeUrl(key);
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.valueOf(youtubeUrl));
+                context.startActivity(Intent.createChooser(sharingIntent,"Share using"));
+
+            }else {
+                int position = getAdapterPosition();
+                List<VideoModel> data = mData;
+                itemClickListener.onListItemClick(position,data);
+            }
+
 
         }
     }

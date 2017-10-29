@@ -6,9 +6,13 @@
     <!--<color name="colorAccent">#FF4081</color>-->
 
     <!--modified-->
-    <color name="colorPrimary">#212121</color>
-    <color name="colorPrimaryDark">#1D1D1D</color>
-    <color name="colorAccentDark">#980184bf</color>
+    <color name="colorPrimary">#f8f1f1f1</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccentDark">#ffffff</color>
+    <color name="colorPrimary1">#212121</color>
+    <color name="colorPrimaryDark1">#1D1D1D</color>
+    <color name="colorAccentDark1">#980184bf</color>
+    <color name="colorAccent1">#04A3EB</color>
     <color name="colorAccent">#04A3EB</color>
     <color name="rate">#F7C625</color>
     <color name="textColor">#B9B9B9</color>

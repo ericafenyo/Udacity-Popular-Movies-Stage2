@@ -13,11 +13,19 @@
     <string name="TOP_RATED_ORDER">vote_average.desc</string>
     <string name="DEFAULT_ORDER">popularity.desc</string>
     <string name="ORDER_KEY">sort_by</string>
-    <string name="cont">I was not a Deadpool fan and I\'m still not, but like any superhero films I\'d pleasure watching it. The other reason was, we had other superheroes in our time, so this guy is kind of new to me. It was a stunning launch to the big screen for the Deadpool as well as for this new director. This film was merely an introduction tale than a fully stretched story. Like how a human becomes a mutant and later who seeks a revenge for ruining his natural life. But it yet to explain a couple of things and I hope it all will be revealed in its s... read the rest.r</string>
     <string name="videos">VIDEOS</string>
     <string name="reviews">REVIEWS</string>
     <string name="no_videos">No Videos</string>
     <string name="no_reviews">No Reviews</string>
     <string name="size_attr">Size</string>
     <string name="ppi_attr">P</string>
+    <string name="fav">Favorites</string>
+    <string name="about">About</string>
+    <string name="sort">Sort</string>
+    <string name="popular_sort">Popular</string>
+    <string name="delete">Clear all</string>
+    <string name="con_message">No Internet Connection</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="cont">content</string>
+    <string name="accessibility_overflow">discription</string>
 </resources>

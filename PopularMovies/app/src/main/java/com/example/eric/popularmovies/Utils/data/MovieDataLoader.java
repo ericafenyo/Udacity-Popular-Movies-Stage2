@@ -1,6 +1,8 @@
 package com.example.eric.popularmovies.Utils.data;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.eric.popularmovies.Models.MovieModel;
@@ -39,22 +41,44 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
     private String voteAverage;
     private String releaseDate;
     private String backdropPath;
+    private int page;
+    private String sort;
+    private List<MovieModel> cached;
 
+    public MovieDataLoader(Context context, int page,String sort) {
 
-    public MovieDataLoader(Context context) {
         super(context);
+        this.page = page; // the request page number
+        this.sort = sort; // the movie sort order
     }
     @Override
     protected void onStartLoading() {
-        forceLoad();
+
+        if (cached == null){
+            forceLoad();
+        }else {
+            super.deliverResult(cached);
+        }
     }
 
     @Override
     public List<MovieModel> loadInBackground() {
-        URL url = NetworkUtils.buildSortUrl("popular",10);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = false;
+
+        if (activeNetwork != null) {
+            isConnected = activeNetwork != null & activeNetwork.isConnectedOrConnecting();
+        }
+
+        if (isConnected){
+
+        URL url = NetworkUtils.buildSortUrl(sort,page);
         model = new MovieModel();
         data = new ArrayList<>();
 
+            //getting and parsing the response from server
         try {
             String response = NetworkUtils.getHttpResponse(url);
             JSONObject root = new JSONObject(response);
@@ -63,9 +87,6 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
 
             for (int i = 0; i < results.length(); i++){
                 JSONObject object = results.getJSONObject(i);
-                //Getting values from related json keys
-
-//                Log.d("String", String.valueOf(id));
 
                 int genre = 0;
                 JSONArray genreArray = object.getJSONArray(GENRE_ID);
@@ -80,22 +101,18 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
                 backdropPath = object.getString(BACKDROP_PATH);
                 int id = object.getInt(MOVIE_ID);
                 data.add(new MovieModel(title,backdropPath,voteAverage,posterPath,overview,releaseDate,id,totalPages,genre));
-//                Log.d("This id", String.valueOf(id));
-
             }
             return data;
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+        }
         return null;
-//        return data;
-    }
-    public static List<MovieModel> getData(){
-        return data;
     }
 
     @Override
     public void deliverResult(List<MovieModel> data) {
+        cached = data;
         super.deliverResult(data);
     }
 

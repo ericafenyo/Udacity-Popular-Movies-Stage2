@@ -22,6 +22,17 @@ public class MovieModel implements Parcelable{
     public MovieModel() {
     }
 
+    public MovieModel(String originalTitle, String voteAverage, String posterPath, String overview, String releaseDate, int id, int genreIds,String backdrop) {
+        this.originalTitle = originalTitle;
+        this.voteAverage = voteAverage;
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.id = id;
+        this.genreIds = genreIds;
+        this.backdropPath = backdrop;
+    }
+
     public MovieModel(String originalTitle, String backdropPath, String voteAverage, String posterPath, String overview, String releaseDate, int id, int totalPages, int genreIds) {
         this.originalTitle = originalTitle;
         this.backdropPath = backdropPath;
@@ -32,6 +43,7 @@ public class MovieModel implements Parcelable{
         this.id = id;
         this.totalPages = totalPages;
         this.genreIds = genreIds;
+
     }
 
     protected MovieModel(Parcel in) {
@@ -57,6 +69,8 @@ public class MovieModel implements Parcelable{
             return new MovieModel[size];
         }
     };
+
+
 
     public String getOriginalTitle() {
         return originalTitle;

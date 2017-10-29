@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar_settings" />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="Udacity Popular Movies Application"
+        android:layout_marginEnd="@dimen/side_gap"
+        android:layout_marginStart="@dimen/side_gap"
+        android:layout_marginTop="@dimen/side_gap"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginEnd="@dimen/side_gap"
+        android:layout_marginStart="@dimen/side_gap"
+        android:layout_marginTop="@dimen/gap"
+        android:text="Popular Movies is a Movie guide created as part of Udacity's Android Development Course projects."
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/side_gap"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content">
+
+        <TextView
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginEnd="@dimen/side_gap"
+            android:layout_marginStart="@dimen/side_gap"
+            android:text=" Movie information is provided by"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/TMDb_logo"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:layout_marginTop="@dimen/gap"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_primary_green" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/gap"
+        android:layout_height="1dp"
+        android:layout_marginEnd="@dimen/space"
+        android:layout_marginStart="@dimen/space"
+        android:background="@color/gray"/>
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="By Eric Afenyo "
+        android:layout_margin="@dimen/gap"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+
+
+

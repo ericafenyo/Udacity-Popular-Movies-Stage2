@@ -1,11 +1,11 @@
 package com.example.eric.popularmovies.Utils.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import static android.provider.BaseColumns._ID;
+import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_BACKDROP;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_DATE;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_GENRE_ID;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_OVERVIEW;
@@ -32,14 +32,17 @@ public class FavoriteSqliteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String CREATE_TABLE =
 
-                "CREATE TABLE " + TABLE_NAME + " (" +
-                        _ID + " INTEGER NOT NULL, " +
+                "CREATE TABLE " +
+                        TABLE_NAME +
+                        " (" +
+                        _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_TITLE + " TEXT NOT NULL, " +
                         COLUMN_GENRE_ID + " INTEGER NOT NULL, " +
                         COLUMN_DATE + " TEXT NOT NULL, " +
-                        COLUMN_RATE + " TEXT NOT NULL, " +
-                        COLUMN_OVERVIEW + " REAL NOT NULL, " +
-                        COLUMN_POSTER + " BLOB , " +
+                        COLUMN_RATE + " REAL NOT NULL, " +
+                        COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+                        COLUMN_POSTER + " TEXT ," +
+                        COLUMN_BACKDROP + " TEXT " +
         ");";
 
         sqLiteDatabase.execSQL(CREATE_TABLE);
@@ -52,21 +55,5 @@ public class FavoriteSqliteHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertFavorite(int id , String originalTitle,int genreId,String date,String voteAverage,String overview, byte[] poster) {
-     SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(_ID,id);
-        values.put(COLUMN_TITLE,originalTitle);
-        values.put(COLUMN_GENRE_ID,genreId);
-        values.put(COLUMN_DATE,date);
-        values.put(COLUMN_RATE,voteAverage);
-        values.put(COLUMN_OVERVIEW,overview);
-        values.put(COLUMN_POSTER,poster);
-        long feedback = db.insert(TABLE_NAME,null,values);
-        if (feedback == -1){
-            return false;
-        }else {
-            return true;
-        }
-    }
+
 }
