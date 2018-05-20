@@ -5,8 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.example.eric.popularmovies.Models.ReviewModel;
-import com.example.eric.popularmovies.Models.VideoModel;
+import com.example.eric.popularmovies.Models.Review;
+import com.example.eric.popularmovies.Models.Video;
 import com.example.eric.popularmovies.Utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -80,25 +80,25 @@ public class ObjectDataLoader extends AsyncTaskLoader<List<Object>> {
                 JSONObject v_root = new JSONObject(v_Response);
                 JSONArray v_results = v_root.getJSONArray(ARRAY_ROOT);
 
-                List<VideoModel> v_data = new ArrayList<>();
+                List<Video> v_data = new ArrayList<>();
                 for (int i = 0; i < v_results.length(); i++) {
                     JSONObject object = v_results.getJSONObject(i);
                     String name = object.getString(VIDEO_NAME);
                     String key = object.getString(VIDEO_KEY);
                     int size = object.getInt(VIDEO_SIZE);
-                    v_data.add(new VideoModel(name, key, size));
+                    v_data.add(new Video(name, key, size));
                 }
 
                 JSONObject root = new JSONObject(r_Response);
                 JSONArray results = root.getJSONArray(ARRAY_ROOT);
 
-                List<ReviewModel> r_data = new ArrayList<>();
+                List<Review> r_data = new ArrayList<>();
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject object = results.getJSONObject(i);
                     String author = object.getString(REVIEW_AUTHOR);
                     String content = object.getString(REVIEW_CONTENT);
                     String link = object.getString(REVIEW_URL);
-                    r_data.add(new ReviewModel(author, content, link));
+                    r_data.add(new Review(author, content, link));
 
                 }
 

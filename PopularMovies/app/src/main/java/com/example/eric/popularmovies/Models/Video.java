@@ -5,15 +5,15 @@ package com.example.eric.popularmovies.Models;
  * Created by eric on 17/10/2017.
  */
 
-public class VideoModel {
+public class Video {
     private String name;
     private String key;
     private int size;
 
-    public VideoModel() {
+    public Video() {
     }
 
-    public VideoModel(String name, String key, int size) {
+    public Video(String name, String key, int size) {
         this.name = name;
         this.key = key;
         this.size = size;

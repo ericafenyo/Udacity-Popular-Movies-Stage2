@@ -24,8 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.eric.popularmovies.Adapters.MovieAdapter;
-import com.example.eric.popularmovies.Models.MovieModel;
-import com.example.eric.popularmovies.Notify;
+import com.example.eric.popularmovies.Models.Movie;
+import com.example.eric.popularmovies.Utils.ActivityUtil;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.data.MovieDataLoader;
 
@@ -34,7 +34,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//TODO: Add a key with name "MyToken" to the gradle.properties and set it's value to your valid TMDb Api Key;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener {
 
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     SharedPreferences preferences;
     SharedPreferences.Editor preferenceEditor;
 
-    Notify toast = new Notify(this);
     GridLayoutManager layoutManager;
 
     @BindView(R.id.main_toolbar) Toolbar toolbar;
@@ -80,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     //OnclickItemListener
     @Override
-    public void OnListItemClick(int position, List<MovieModel> movieModels, ImageView poster) {
-        sendIntentData(position, movieModels);
+    public void onClick(int position, List<Movie> movies, ImageView poster) {
+        sendIntentData(position, movies);
     }
 
     //LayoutManager settings depending on device type and orientation
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 finish();
                 startActivity(getIntent());
             }else {
-                toast.makeToast("not connected");
+                ActivityUtil.makeToast(MainActivity.this,getString(R.string.msg_no_internet_connection));
             }
         }
     };
@@ -185,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 break;
 
             case R.id.fav:
-                Intent intent = new Intent(this,Favorite.class);
+                Intent intent = new Intent(this,FavoriteActivity.class);
                 startActivity(intent);
 
                 break;
@@ -243,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
      * @description sends data to MovieDetails class
      */
 
-    public void sendIntentData(int position, List<MovieModel> mdata) {
-        MovieModel movie = mdata.get(position);
+    public void sendIntentData(int position, List<Movie> mdata) {
+        Movie movie = mdata.get(position);
         Intent intent = new Intent(this, MovieDetails.class);
         intent.putExtra("original_title", movie.getOriginalTitle());
         intent.putExtra("vote_average", movie.getVoteAverage());
@@ -263,14 +261,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
      * @description populates the recyclerView based on the sorting order given
      */
     public void sortBy(final String sort){
-        getSupportLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<List<MovieModel>>() {
+        getSupportLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<List<Movie>>() {
             @Override
-            public Loader<List<MovieModel>> onCreateLoader(int id, Bundle args) {
+            public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
                 return new MovieDataLoader(MainActivity.this,6,sort);
             }
 
             @Override
-            public void onLoadFinished(Loader<List<MovieModel>> loader, List<MovieModel> data) {
+            public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
                boolean isConnected = checkConnectivity();
                 if (!isConnected){
                     error_tv.setText("No Connection");
@@ -280,14 +278,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 }
                 else {
                     showData();
-                    MovieAdapter adapter = new MovieAdapter( data,MainActivity.this, MainActivity.this);
+                    MovieAdapter adapter = new MovieAdapter(MainActivity.this,data, MainActivity.this);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setHasFixedSize(true);
                 }
             }
 
             @Override
-            public void onLoaderReset(Loader<List<MovieModel>> loader) {
+            public void onLoaderReset(Loader<List<Movie>> loader) {
 
             }
         });

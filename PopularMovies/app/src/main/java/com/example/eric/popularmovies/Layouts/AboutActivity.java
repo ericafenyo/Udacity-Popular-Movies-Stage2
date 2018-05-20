@@ -7,23 +7,18 @@ import android.view.MenuItem;
 
 import com.example.eric.popularmovies.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class AboutActivity extends AppCompatActivity {
-    @BindView(R.id.toolbar_settings)Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        setTitle("About");
+        Toolbar toolbar = findViewById(R.id.toolbar_settings);
 
-        // adds back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            setTitle(getString(R.string.title_about));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -33,7 +28,7 @@ public class AboutActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
         }
         return true;

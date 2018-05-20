@@ -34,7 +34,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.eric.popularmovies.Adapters.ObjectAdapter;
-import com.example.eric.popularmovies.Notify;
+import com.example.eric.popularmovies.Utils.ActivityUtil;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.DateUtils;
 import com.example.eric.popularmovies.Utils.GenreUtils;
@@ -42,9 +42,12 @@ import com.example.eric.popularmovies.Utils.NetworkUtils;
 import com.example.eric.popularmovies.Utils.data.FavoriteContract;
 import com.example.eric.popularmovies.Utils.data.ObjectDataLoader;
 import com.example.eric.popularmovies.Utils.data.SingleFavoriteDataLoader;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.example.eric.popularmovies.R.id.movie_genre;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_BACKDROP;
@@ -59,25 +62,22 @@ import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntr
 
 public class MovieDetails extends AppCompatActivity {
 
-    Toolbar toolbar;
-    TextView originalTitle_tv;
-    TextView voteAverage_tv;
-    ImageView poster_iv;
-    TextView overview_tv;
-    TextView releaseDate_tv;
-    ImageView backdrop_iv;
-    TextView genre_tv;
-    TextView overview_header;
+    @BindView(R.id.movie_title) TextView tvMovieTitle;
+    @BindView(R.id.movie_user_rating) TextView tvMovieVoteAverage;
+    @BindView(R.id.movie_genre) TextView tvMovieGenre;
+    @BindView(R.id.overview_header) TextView tvOverviewHeadline;
+    @BindView(R.id.movie_overview) TextView tvMovieOverview;
+    @BindView(R.id.movie_release_date) TextView tvMovieReleaseDate;
+    @BindView(R.id.backdrop_image) ImageView ivMovieBackdrop;
+    @BindView(R.id.detail_poster) ImageView ivMoviePoster;
+    @BindView(R.id.fab) FloatingActionButton favBn;
 
-    RelativeLayout relativeLayout;
-    ScrollView scrollView;
+    @BindView(R.id.rlayout) RelativeLayout relativeLayout;
+//    @BindView(R.id.scrollView) ScrollView scrollView;
+    @BindView(R.id.recyclerView) RecyclerView mainRecyclerView;
+    @BindView(R.id.detail_coordinator) CoordinatorLayout coordinatorLayout;
 
-    ObjectAdapter mainAdapter;
-    RecyclerView mainRecyclerView;
-    FloatingActionButton favBn;
-    Notify notify = new Notify(this);
-
-    private  CollapsingToolbarLayout collapsingToolbarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private String title;
     private String rate;
     private String overview;
@@ -88,7 +88,7 @@ public class MovieDetails extends AppCompatActivity {
     private int pageNumber;
     private int movieId;
 
-    CoordinatorLayout coordinatorLayout;
+
     AppBarLayout appBarLayout;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -99,13 +99,14 @@ public class MovieDetails extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        ButterKnife.bind(this);
 
-        // setting toolbar
-        toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        // setup toolbar
+        Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -115,30 +116,15 @@ public class MovieDetails extends AppCompatActivity {
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
         setToolbarConf();
 
-        //would have replaced them with ButterKnife but it's having problems binding some Views
-        originalTitle_tv = (TextView) findViewById(R.id.movie_title);
-        voteAverage_tv = (TextView) findViewById(R.id.movie_user_rating);
-        overview_tv = (TextView) findViewById(R.id.movie_overview);
-        releaseDate_tv = (TextView) findViewById(R.id.movie_release_date);
-        poster_iv = (ImageView) findViewById(R.id.detail_poster);
-        backdrop_iv = (ImageView) findViewById(R.id.backdrop_image);
-        genre_tv = (TextView) findViewById(movie_genre);
-        relativeLayout = (RelativeLayout) findViewById(R.id.rlayout);
-        overview_header = (TextView) findViewById(R.id.overview_header);
-        favBn = (FloatingActionButton) findViewById(R.id.fab);
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
-        mainRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.detail_coordinator);
-
-        //retries data from PutExtra initiated in Main or Favorite Activity;
+        //retries data from PutExtra initiated in Main or FavoriteActivity Activity;
         getMovieItems();
 
         //LoaderCallbacks
-        getSupportLoaderManager().initLoader(0,null,objectCallbackTest);
-        getSupportLoaderManager().initLoader(4,null,checkColor);
+        getSupportLoaderManager().initLoader(0, null, objectCallbackTest);
+        getSupportLoaderManager().initLoader(4, null, checkColor);
 
 
-        //Favorite FloatingActionButton
+        //FavoriteActivity FloatingActionButton
         favBn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,8 +134,8 @@ public class MovieDetails extends AppCompatActivity {
     }
 
 
-    //retrieving data from PutExtra initiated in Main and Favorite Activity;
-    public void getMovieItems(){
+    //retrieving data from PutExtra initiated in Main and FavoriteActivity Activity;
+    public void getMovieItems() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -163,14 +149,13 @@ public class MovieDetails extends AppCompatActivity {
             pageNumber = intent.getExtras().getInt("total_pages");
             movieId = intent.getExtras().getInt("movies_id");
 
-            //Setting the data onto  this'.views
+
             String posterUrl = String.valueOf(NetworkUtils.buildImageUrl(poster));
             String backdropUrl = String.valueOf(NetworkUtils.buildImageUrl(backdrop));
-            Picasso.with(this).load(backdropUrl).placeholder(R.drawable.poster_placeholder).error(R.drawable.error_placeholder).into(backdrop_iv);
-//          Picasso.with(this).load(posterUrl).placeholder(R.drawable.poster_placeholder).error(R.drawable.error_placeholder).into(poster_iv);
+            Glide.with(this).load(backdropUrl).placeholder(R.drawable.poster_placeholder).error(R.drawable.error_placeholder).into(ivMovieBackdrop);
 
-            //slower than Picasso but easier to assess the Bitmaps
-            Glide.with(this).load(posterUrl).asBitmap().into(new BitmapImageViewTarget(poster_iv) {
+
+            Glide.with(this).load(posterUrl).asBitmap().into(new BitmapImageViewTarget(ivMoviePoster) {
                 @Override
                 public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                     super.onResourceReady(bitmap, glideAnimation);
@@ -181,20 +166,20 @@ public class MovieDetails extends AppCompatActivity {
             //setting values to their respective Views
             String convectedDate = new DateUtils().getDate(releaseDate);
             String movie_genre = new GenreUtils().convertGengre(genre);
-            genre_tv.setText(movie_genre);
-            releaseDate_tv.setText(convectedDate);
-            originalTitle_tv.setText(title);
-            originalTitle_tv.setSelected(true);
-            overview_tv.setText(overview);
-            voteAverage_tv.setText(rate);
+            tvMovieGenre.setText(movie_genre);
+            tvMovieReleaseDate.setText(convectedDate);
+            tvMovieTitle.setText(title);
+            tvMovieTitle.setSelected(true);
+            tvMovieOverview.setText(overview);
+            tvMovieVoteAverage.setText(rate);
 
-        }else {
-            notify.makeToast("NO DATA FOUND");
+        } else {
+            ActivityUtil.makeToast(MovieDetails.this,"NO DATA FOUND");
         }
     }
 
     //CollapsingToolbarLayout Config.
-    public void setToolbarConf(){
+    public void setToolbarConf() {
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -208,17 +193,17 @@ public class MovieDetails extends AppCompatActivity {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle(title);
-                    collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(),R.color.cardview_dark_background));
+                    collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.cardview_dark_background));
                     favBn.setVisibility(View.INVISIBLE);
                     isShow = true;
-                    final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(),R.drawable.abc_ic_ab_back_material);
-                    upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.cardview_dark_background), PorterDuff.Mode.SRC_ATOP);
+                    final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
+                    upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.cardview_dark_background), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
-                } else if(isShow) {
+                } else if (isShow) {
                     favBn.setVisibility(View.VISIBLE);
                     collapsingToolbarLayout.setTitle(" ");
-                    final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(),R.drawable.abc_ic_ab_back_material);
-                    upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.white), PorterDuff.Mode.SRC_ATOP);
+                    final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
+                    upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
                     isShow = false;
@@ -230,75 +215,75 @@ public class MovieDetails extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().restartLoader(4,null,checkColor);
+        getSupportLoaderManager().restartLoader(4, null, checkColor);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.details_menu,menu);
+        inflater.inflate(R.menu.details_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
 
             case R.id.fav:
-               Intent intent = new Intent(this, Favorite.class);
+                Intent intent = new Intent(this, FavoriteActivity.class);
                 startActivity(intent);
                 break;
 
-        case R.id.about:
-        Intent sIntent = new Intent(this,AboutActivity.class);
-        startActivity(sIntent);
-        break;
+            case R.id.about:
+                Intent sIntent = new Intent(this, AboutActivity.class);
+                startActivity(sIntent);
+                break;
         }
         return true;
     }
 
     //Inserts data Into the Database
-    public void insertData(){
-        if (title.length() == 0){
+    public void insertData() {
+        if (title.length() == 0) {
             return;
         }
 
         ContentValues values = new ContentValues();
-        values.put(_ID,movieId);
-        values.put(COLUMN_TITLE,title);
-        values.put(COLUMN_GENRE_ID,genre);
-        values.put(COLUMN_DATE,releaseDate);
-        values.put(COLUMN_RATE,rate);
-        values.put(COLUMN_OVERVIEW,overview);
-        values.put(COLUMN_POSTER,poster);
-        values.put(COLUMN_BACKDROP,backdrop);
+        values.put(_ID, movieId);
+        values.put(COLUMN_TITLE, title);
+        values.put(COLUMN_GENRE_ID, genre);
+        values.put(COLUMN_DATE, releaseDate);
+        values.put(COLUMN_RATE, rate);
+        values.put(COLUMN_OVERVIEW, overview);
+        values.put(COLUMN_POSTER, poster);
+        values.put(COLUMN_BACKDROP, backdrop);
 
-        Uri uri = getContentResolver().insert(FAVORITES_CONTENT_URI,values);
-        if (uri != null){
-            getContentResolver().notifyChange(uri,null);
-            notify.makeSnack(coordinatorLayout,"Added to Favorites");
+        Uri uri = getContentResolver().insert(FAVORITES_CONTENT_URI, values);
+        if (uri != null) {
+            getContentResolver().notifyChange(uri, null);
+            ActivityUtil.makeSnack(coordinatorLayout, "Added to Favorites");
             setIconRed();
         }
     }
 
     //Deletes data From the Database
-    private void deleteData(){
+    private void deleteData() {
         Uri uri = FavoriteContract.FavEntryList.FAVORITES_CONTENT_URI;
         Uri nUri = uri.buildUpon().appendPath(String.valueOf(movieId)).build();
-        int fb = getContentResolver().delete(nUri,null,null);
+        int fb = getContentResolver().delete(nUri, null, null);
 
         if (fb > 0)
-            getContentResolver().notifyChange(nUri,null);
-        notify.makeSnack(coordinatorLayout,"Removed From Favorites");
-            setIconGray();
+            getContentResolver().notifyChange(nUri, null);
+        ActivityUtil.makeSnack(coordinatorLayout, "Removed From Favorites");
+        setIconGray();
     }
 
     //Using Google.Pallets To extract from Bitmaps
-    public void setColorFromImage(final Bitmap bitmap){
+    public void setColorFromImage(final Bitmap bitmap) {
         if (bitmap != null) {
             Palette.from(bitmap).maximumColorCount(1000).generate(new Palette.PaletteAsyncListener() {
                 @Override
@@ -306,13 +291,13 @@ public class MovieDetails extends AppCompatActivity {
                     Palette.Swatch swatch = palette.getDarkVibrantSwatch();
                     if (swatch != null) {
                         relativeLayout.setBackgroundColor(swatch.getRgb());
-                        genre_tv.setTextColor(swatch.getBodyTextColor());
-                        overview_tv.setTextColor(swatch.getBodyTextColor());
-                        voteAverage_tv.setTextColor(swatch.getBodyTextColor());
-                        overview_header.setTextColor(swatch.getTitleTextColor());
-                        genre_tv.setTextColor(swatch.getBodyTextColor());
-                        originalTitle_tv.setTextColor(swatch.getTitleTextColor());
-                        releaseDate_tv.setTextColor(swatch.getBodyTextColor());
+                        tvMovieGenre.setTextColor(swatch.getBodyTextColor());
+                        tvMovieOverview.setTextColor(swatch.getBodyTextColor());
+                        tvMovieVoteAverage.setTextColor(swatch.getBodyTextColor());
+                        tvOverviewHeadline.setTextColor(swatch.getTitleTextColor());
+                        tvMovieGenre.setTextColor(swatch.getBodyTextColor());
+                        tvMovieTitle.setTextColor(swatch.getTitleTextColor());
+                        tvMovieReleaseDate.setTextColor(swatch.getBodyTextColor());
 
                     }
                 }
@@ -327,14 +312,14 @@ public class MovieDetails extends AppCompatActivity {
         public Loader<List<Object>> onCreateLoader(int id, Bundle args) {
             Intent i = getIntent();
             int movie_id = i.getExtras().getInt("movies_id");
-            return new ObjectDataLoader(MovieDetails.this,movie_id);
+            return new ObjectDataLoader(MovieDetails.this, movie_id);
         }
 
         @Override
         public void onLoadFinished(Loader<List<Object>> loader, List<Object> data) {
 
-            if (data !=null) {
-                mainAdapter = new ObjectAdapter(MovieDetails.this,data);
+            if (data != null) {
+                ObjectAdapter mainAdapter = new ObjectAdapter(MovieDetails.this, data);
                 mainRecyclerView.setAdapter(mainAdapter);
                 mainRecyclerView.setLayoutManager(new LinearLayoutManager(MovieDetails.this));
             }
@@ -346,24 +331,26 @@ public class MovieDetails extends AppCompatActivity {
 
     };
 
-    /**Boolean LoaderCallbacks
-    * Returns a boolean to whether a specific row of data is present in the database or not */
+    /**
+     * Boolean LoaderCallbacks
+     * Returns a boolean to whether a specific row of data is present in the database or not
+     */
 
     private LoaderManager.LoaderCallbacks<Boolean> checkColor = new LoaderManager.LoaderCallbacks<Boolean>() {
         int mId;
+
         @Override
         public Loader<Boolean> onCreateLoader(int id, Bundle args) {
             Intent intent = getIntent();
             mId = intent.getExtras().getInt("movies_id");
-            return new SingleFavoriteDataLoader(MovieDetails.this,String.valueOf(mId));
+            return new SingleFavoriteDataLoader(MovieDetails.this, String.valueOf(mId));
         }
 
         @Override
         public void onLoadFinished(Loader<Boolean> loader, Boolean data) {
-            if (!data){
+            if (!data) {
                 setIconGray();
-            }
-            else setIconRed();
+            } else setIconRed();
         }
 
         @Override
@@ -372,7 +359,7 @@ public class MovieDetails extends AppCompatActivity {
         }
     };
 
-    //stores Favorite Custom Preferences
+    //stores FavoriteActivity Custom Preferences
     public void storeFavPreferences(String key, int value) {
         preferences = getSharedPreferences(DF, MODE_PRIVATE);
         editor = preferences.edit();
@@ -386,32 +373,31 @@ public class MovieDetails extends AppCompatActivity {
         return preferences.getInt(key, deft);
     }
 
-//   method for setting favorites
-    public void setFav(String id){
-        int pref = getFavPreferences(String.valueOf(id),1);
+    //   method for setting favorites
+    public void setFav(String id) {
+        int pref = getFavPreferences(String.valueOf(id), 1);
         if (pref == 1) {
-            storeFavPreferences(String.valueOf(id),0);
+            storeFavPreferences(String.valueOf(id), 0);
             setIconGray();
             insertData();
 
-        }
-        else if (pref == 0) {
-            storeFavPreferences(String.valueOf(id),1);
+        } else if (pref == 0) {
+            storeFavPreferences(String.valueOf(id), 1);
             setIconRed();
             deleteData();
         }
     }
 
-    public void setIconRed (){
-        Drawable myFabSrc = ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_fav);
+    public void setIconRed() {
+        Drawable myFabSrc = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_fav);
         Drawable willBeRed = myFabSrc.getConstantState().newDrawable();
         willBeRed.mutate().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         favBn.setImageDrawable(willBeRed);
 
     }
 
-    public void setIconGray (){
-        Drawable myFabSrc = ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_fav);
+    public void setIconGray() {
+        Drawable myFabSrc = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_fav);
         Drawable willBeGray = myFabSrc.getConstantState().newDrawable();
         willBeGray.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         favBn.setImageDrawable(willBeGray);

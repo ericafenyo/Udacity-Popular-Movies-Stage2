@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.example.eric.popularmovies.Models.MovieModel;
+import com.example.eric.popularmovies.Models.Movie;
 import com.example.eric.popularmovies.Utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -22,9 +22,9 @@ import java.util.List;
  * Created by eric on 17/10/2017.
  */
 
-public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
-    private static List<MovieModel> data;
-    MovieModel model;
+public class MovieDataLoader extends AsyncTaskLoader<List<Movie>>{
+    private static List<Movie> data;
+    Movie model;
     private static final String TITLE ="original_title";
     private static final String BACKDROP_PATH ="backdrop_path";
     private static final String POSTER_PATH = "poster_path";
@@ -43,7 +43,7 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
     private String backdropPath;
     private int page;
     private String sort;
-    private List<MovieModel> cached;
+    private List<Movie> cached;
 
     public MovieDataLoader(Context context, int page,String sort) {
 
@@ -62,7 +62,7 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
     }
 
     @Override
-    public List<MovieModel> loadInBackground() {
+    public List<Movie> loadInBackground() {
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
@@ -75,7 +75,7 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
         if (isConnected){
 
         URL url = NetworkUtils.buildSortUrl(sort,page);
-        model = new MovieModel();
+        model = new Movie();
         data = new ArrayList<>();
 
             //getting and parsing the response from server
@@ -100,7 +100,7 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
                 releaseDate = object.getString(RELEASE_DATE);
                 backdropPath = object.getString(BACKDROP_PATH);
                 int id = object.getInt(MOVIE_ID);
-                data.add(new MovieModel(title,backdropPath,voteAverage,posterPath,overview,releaseDate,id,totalPages,genre));
+                data.add(new Movie(title,backdropPath,voteAverage,posterPath,overview,releaseDate,id,totalPages,genre));
             }
             return data;
         } catch (IOException | JSONException e) {
@@ -111,7 +111,7 @@ public class MovieDataLoader extends AsyncTaskLoader<List<MovieModel>>{
     }
 
     @Override
-    public void deliverResult(List<MovieModel> data) {
+    public void deliverResult(List<Movie> data) {
         cached = data;
         super.deliverResult(data);
     }

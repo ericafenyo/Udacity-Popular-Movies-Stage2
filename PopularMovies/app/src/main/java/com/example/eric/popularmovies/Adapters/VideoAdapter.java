@@ -10,94 +10,94 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.eric.popularmovies.Models.VideoModel;
+import com.bumptech.glide.Glide;
+import com.example.eric.popularmovies.Models.Video;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
- *
  * Created by eric on 17/10/2017.
  */
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapterViewHolder>{
-    private Context context;
-    private List<VideoModel> mData;
-    private final ListItemClickListener itemClickListener;
+public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
+
+    private Context mContext;
+    private List<Video> mData;
+    private final ListItemClickListener mItemClickListener;
 
 
-    public VideoAdapter(Context context, List<VideoModel> mData, ListItemClickListener itemClickListener) {
-        this.context = context;
-        this.mData = mData;
-        this.itemClickListener = itemClickListener;
+    public VideoAdapter(Context context, List<Video> videos, ListItemClickListener itemClickListener) {
+        this.mContext = context;
+        this.mData = videos;
+        this.mItemClickListener = itemClickListener;
     }
 
-    public  interface ListItemClickListener {
-        void onListItemClick(int position, List<VideoModel> models);
-    }
-
-    @Override
-    public VideoAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.video_list_item,parent,false);
-        return new VideoAdapterViewHolder(view);
-
+    public interface ListItemClickListener {
+        void onListItemClick(int position, List<Video> videos);
     }
 
     @Override
-    public void onBindViewHolder(VideoAdapterViewHolder holder, int position) {
-        VideoModel model = mData.get(position);
-        holder.name.setText(model.getName());
-        holder.size.setText( "Size: " + String.valueOf(model.getSize())+"P");
-        String key = model.getKey();
-        URL thlUrl = NetworkUtils.buildYoutubeTHLUrl(key);
-        Picasso.with(context).load(String.valueOf(thlUrl)).into(holder.videoContainer);
+    public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new VideoViewHolder(LayoutInflater.from(mContext)
+                .inflate(R.layout.video_list_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(VideoViewHolder holder, int position) {
+        Video video = mData.get(position);
+        holder.tvMovieTitle.setText(video.getName());
+        holder.tvVideoResolution.setText("Size: " + String.valueOf(video.getSize()) + "P");
+        String key = video.getKey();
+        String youtubeThumbnailUrl = String.valueOf(NetworkUtils.buildYoutubeTHLUrl(key));
+
+        Glide.with(mContext)
+                .load(youtubeThumbnailUrl)
+                .into(holder.ivVideoThumbnail);
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mData == null ? 0 : mData.size();
     }
 
-    public class VideoAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView name;
-        private TextView size;
-        private ImageView videoContainer;
-        Button shareBn;
+    public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public VideoAdapterViewHolder(View itemView) {
+        @BindView(R.id.text_movie_title) TextView tvMovieTitle;
+        @BindView(R.id.text_video_resolution) TextView tvVideoResolution;
+        @BindView(R.id.image_video_thumbnail) ImageView ivVideoThumbnail;
+        @BindView(R.id.button_share_video) Button btnShare;
+
+        public VideoViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.name);
-            size =  itemView.findViewById(R.id.size);
-            videoContainer = itemView.findViewById(R.id.trailer_container);
+            ButterKnife.bind(this, itemView);
 
-            shareBn = itemView.findViewById(R.id.share_video);
             itemView.setOnClickListener(this);
-            shareBn.setOnClickListener(this);
-
+            btnShare.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View view) {
-            if (view.getId() == shareBn.getId()){
-                VideoModel model = mData.get(getAdapterPosition());
+            if (view.getId() == btnShare.getId()) {
+                Video model = mData.get(getAdapterPosition());
                 String key = model.getKey();
                 URL youtubeUrl = NetworkUtils.buildYoutubeUrl(key);
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/html");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.valueOf(youtubeUrl));
-                context.startActivity(Intent.createChooser(sharingIntent,"Share using"));
+                mContext.startActivity(Intent.createChooser(sharingIntent, "Share using"));
 
-            }else {
+            } else {
                 int position = getAdapterPosition();
-                List<VideoModel> data = mData;
-                itemClickListener.onListItemClick(position,data);
+                List<Video> data = mData;
+                mItemClickListener.onListItemClick(position, data);
             }
-
-
         }
     }
 }

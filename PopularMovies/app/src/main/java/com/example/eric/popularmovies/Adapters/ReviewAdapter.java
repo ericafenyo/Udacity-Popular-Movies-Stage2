@@ -7,53 +7,55 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.eric.popularmovies.Models.ReviewModel;
+import com.example.eric.popularmovies.Models.Review;
 import com.example.eric.popularmovies.R;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by eric on 17/10/2017.
  */
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder >{
-    private Context context;
-    private List<ReviewModel> mData;
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
-    public ReviewAdapter(Context context, List<ReviewModel> mData) {
-        this.context = context;
-        this.mData = mData;
+    private Context mContext;
+    private List<Review> mData;
+
+    public ReviewAdapter(Context context, List<Review> reviews) {
+        this.mContext = context;
+        this.mData = reviews;
     }
 
     @Override
     public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.review_list_item,parent,false);
-        return new ReviewViewHolder(view);
+        return new ReviewViewHolder(LayoutInflater.from(mContext)
+                .inflate(R.layout.review_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ReviewViewHolder holder, int position) {
-        ReviewModel model = mData.get(position);
-        holder.author.setText(model.getAuthor());
-        holder.content.setText(model.getContent());
+        Review review = mData.get(position);
+
+        holder.author.setText(review.getAuthor());
+        holder.content.setText(review.getContent());
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mData == null ? 0 : mData.size();
     }
-
 
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView author;
-        private TextView content;
+        @BindView(R.id.review_author) TextView author;
+        @BindView(R.id.review_content) TextView content;
+
         public ReviewViewHolder(View itemView) {
             super(itemView);
-
-            author = itemView.findViewById(R.id.review_author);
-            content = itemView.findViewById(R.id.review_content);
+            ButterKnife.bind(this, itemView);
         }
     }
-
 }

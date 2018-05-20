@@ -5,7 +5,7 @@
     android:padding="1dp">
 
     <ImageView
-        android:id="@+id/poster_main"
+        android:id="@+id/image_movie_poster"
         android:layout_width="match_parent"
         android:src="@drawable/poster_placeholder"
         android:layout_height="275dp"

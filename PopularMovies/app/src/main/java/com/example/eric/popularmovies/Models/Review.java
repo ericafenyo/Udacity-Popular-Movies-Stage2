@@ -4,13 +4,14 @@ package com.example.eric.popularmovies.Models;
  * Created by eric on 17/10/2017.
  */
 
-public class ReviewModel {
+public class Review {
+
     private String author;
     private String content;
     private String url;
     private int total_pages;
 
-    public ReviewModel(String author, String content, String url) {
+    public Review(String author, String content, String url) {
         this.author = author;
         this.content = content;
         this.url = url;

@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.eric.popularmovies.Models.MovieModel;
+import com.bumptech.glide.Glide;
+import com.example.eric.popularmovies.Models.Movie;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * created by eric on 01/10/2017
@@ -20,72 +23,59 @@ import java.util.List;
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    List<MovieModel> movies;
-    Context context;
-    final ListItemClickListener mClickItemListener;
 
+    private Context mContext;
+    private List<Movie> mData;
+    private ListItemClickListener mItemClickListener;
 
     //Constructor
-    public MovieAdapter(List<MovieModel> movies, Context context, ListItemClickListener mClickItemListener) {
-        this.movies = movies;
-        this.context = context;
-        this.mClickItemListener = mClickItemListener;
+    public MovieAdapter(Context context, List<Movie> movies, ListItemClickListener itemClickListener) {
+        this.mContext = context;
+        this.mData = movies;
+        this.mItemClickListener = itemClickListener;
     }
 
-
     public interface ListItemClickListener {
-        void OnListItemClick(int position, List<MovieModel> movieModels, ImageView poster);
-
+        void onClick(int position, List<Movie> movieModels, ImageView poster);
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster, parent, false);
-        return new MovieViewHolder(view);
+        return new MovieViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.movie_poster, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
-        MovieModel object = movies.get(position);
-        String url = String.valueOf((NetworkUtils.buildImageUrl(object.getPosterPath())));
-        Picasso.with(context).load(url).placeholder(R.drawable.poster_placeholder).error(R.drawable.error_placeholder).into(holder.movie_poster);
-        //ViewCompat.setTransitionName(holder.movie_poster, "transitionName");
+        Movie movie = mData.get(position);
+        String moviePosterUrl = String.valueOf((NetworkUtils.buildImageUrl(movie.getPosterPath())));
+
+        Glide.with(mContext)
+                .load(moviePosterUrl)
+                .placeholder(R.drawable.poster_placeholder)
+                .error(R.drawable.error_placeholder)
+                .into(holder.ivMoviePoster);
     }
 
     @Override
     public int getItemCount() {
-        return movies == null ? 0 : movies.size();
+        return mData == null ? 0 : mData.size();
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView movie_poster;
-        ImageView detail_poster;
 
+        @BindView(R.id.image_movie_poster) ImageView ivMoviePoster;
 
         public MovieViewHolder(final View itemView) {
             super(itemView);
-            movie_poster = itemView.findViewById(R.id.poster_main);
-            movie_poster.setTransitionName("transitionName");
-            detail_poster = itemView.findViewById(R.id.detail_poster);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this,itemView);
 
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition();
-            List<MovieModel> data = movies;
-            mClickItemListener.OnListItemClick(position, data, movie_poster);
-
+            mItemClickListener.onClick(getAdapterPosition(), mData, ivMoviePoster);
         }
-
-
-
     }
-
-    public  void addto(List<MovieModel> mod) {
-        movies = mod;
-    }
-
 }

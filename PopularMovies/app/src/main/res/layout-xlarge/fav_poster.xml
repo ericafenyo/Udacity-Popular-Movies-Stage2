@@ -5,15 +5,15 @@
     android:padding="1dp">
 
     <ImageView
-        android:id="@+id/poster_main"
+        android:id="@+id/image_movie_poster"
         android:layout_width="match_parent"
         android:src="@drawable/poster_placeholder"
         android:layout_height="330dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image_view_for_movie_poster" />
 
-    <ImageView
-        android:id="@+id/remove_fav"
+    <ImageButton
+        android:id="@+id/button_delete_favorite"
         android:layout_width="25sp"
         android:layout_height="25dp"
         android:src="@drawable/ic_fav_fav"

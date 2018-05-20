@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.eric.popularmovies.Models.ReviewModel;
-import com.example.eric.popularmovies.Models.VideoModel;
+import com.example.eric.popularmovies.Models.Review;
+import com.example.eric.popularmovies.Models.Video;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.NetworkUtils;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static android.R.attr.id;
 
@@ -25,30 +28,34 @@ import static android.R.attr.id;
  */
 
 public class ObjectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements VideoAdapter.ListItemClickListener {
-    private Context context;
-    private List<Object> mdata;
-    private final static int VIDEOS = 0;
-    private final static int REVIEWS = 1;
 
-    public ObjectAdapter(Context context, List<Object> mdata) {
-        this.context = context;
-        this.mdata = mdata;
+    private final static int VIEW_TYPE_VIDEOS = 0;
+    private final static int VIEW_TYPE_REVIEWS = 1;
+
+    private Context mContext;
+    private List<Object> mData;
+
+
+    public ObjectAdapter(Context context, List<Object> objects) {
+        this.mContext = context;
+        this.mData = objects;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         int layoutId;
         View view;
 
         switch (viewType) {
-            case VIDEOS:
+            case VIEW_TYPE_VIDEOS:
                 layoutId = R.layout.videos;
-                view = LayoutInflater.from(context).inflate(layoutId,parent,false);
+                view = LayoutInflater.from(mContext).inflate(layoutId,parent,false);
                 return new MyVideosViewHolder(view);
 
-            case REVIEWS:
+            case VIEW_TYPE_REVIEWS:
                 layoutId = R.layout.reviews;
-                view = LayoutInflater.from(context).inflate(layoutId,parent,false);
+                view = LayoutInflater.from(mContext).inflate(layoutId,parent,false);
                 return new MyReviewViewHolder(view);
 
             default:
@@ -60,9 +67,9 @@ public class ObjectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         if (position == 0){
-            return VIDEOS;
+            return VIEW_TYPE_VIDEOS;
         }else if (position == 1){
-            return REVIEWS;
+            return VIEW_TYPE_REVIEWS;
         }else {
             return -1;
         }
@@ -72,30 +79,30 @@ public class ObjectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         switch (holder.getItemViewType()){
-            case REVIEWS:
+            case VIEW_TYPE_REVIEWS:
                 bindReviews((MyReviewViewHolder) holder);
                 break;
-            case VIDEOS:
+            case VIEW_TYPE_VIDEOS:
                 bindVideo((MyVideosViewHolder) holder);
 
         }
     }
 
-    //Video ViewHolder
-    public void bindVideo(MyVideosViewHolder vidHolder){
-        VideoAdapter adapter = new VideoAdapter(context, (List<VideoModel>) mdata.get(0),this);
+
+    private void bindVideo(MyVideosViewHolder vidHolder){
+        VideoAdapter adapter = new VideoAdapter(mContext, (List<Video>) mData.get(0),this);
         vidHolder.vRecyclerView.setAdapter(adapter);
-        vidHolder.vRecyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
+        vidHolder.vRecyclerView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         vidHolder.vRecyclerView.setHasFixedSize(true);
         vidHolder.vRecyclerView.setNestedScrollingEnabled(false);
         vidHolder.vRecyclerView.setFocusable(false);
     }
 
-    //Reviews ViewHolder
-    public void bindReviews(MyReviewViewHolder revHolder){
-        ReviewAdapter adapter = new ReviewAdapter(context, (List<ReviewModel>) mdata.get(1));
+
+    private void bindReviews(MyReviewViewHolder revHolder){
+        ReviewAdapter adapter = new ReviewAdapter(mContext, (List<Review>) mData.get(1));
         revHolder.rRecyclerView.setAdapter(adapter);
-        revHolder.rRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        revHolder.rRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         revHolder.rRecyclerView.setHasFixedSize(true);
         revHolder.rRecyclerView.setNestedScrollingEnabled(false);
         revHolder.rRecyclerView.setFocusable(false);
@@ -103,42 +110,43 @@ public class ObjectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mdata == null ? 0 : mdata.size();
+        return mData == null ? 0 : mData.size();
     }
 
 
 
     @Override
-    public void onListItemClick(int position, List<VideoModel> models) {
-        VideoModel model = models.get(position);
+    public void onListItemClick(int position, List<Video> models) {
+        Video model = models.get(position);
         String youTubeUrl = String.valueOf(NetworkUtils.buildYoutubeUrl(model.getKey()));
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + model.getKey()));
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(youTubeUrl + id));
             try {
-                context.startActivity(appIntent);
+                mContext.startActivity(appIntent);
             } catch (ActivityNotFoundException ex) {
-                context.startActivity(webIntent);
+                mContext.startActivity(webIntent);
             }
 
     }
 
-    class MyVideosViewHolder extends RecyclerView.ViewHolder {
+    //Video ViewHolder
+    public class MyVideosViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.video_recyclerView)
         RecyclerView vRecyclerView;
         public MyVideosViewHolder(View itemView) {
             super(itemView);
-            vRecyclerView = itemView.findViewById(R.id.video_recyclerView);
-
+            ButterKnife.bind(this,itemView);
         }
     }
 
-    class MyReviewViewHolder extends RecyclerView.ViewHolder {
+    //Reviews ViewHolder
+    public class MyReviewViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.review_recyclerView)
         RecyclerView rRecyclerView;
         public MyReviewViewHolder(View itemView) {
             super(itemView);
-            rRecyclerView = itemView.findViewById(R.id.review_recyclerView);
+          ButterKnife.bind(this,itemView);
         }
     }
-
-
 }

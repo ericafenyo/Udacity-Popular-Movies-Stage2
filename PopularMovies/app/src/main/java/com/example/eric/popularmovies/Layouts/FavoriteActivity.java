@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +18,16 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.example.eric.popularmovies.Adapters.FavoriteAdapter;
-import com.example.eric.popularmovies.Models.MovieModel;
+import com.example.eric.popularmovies.Models.Movie;
 import com.example.eric.popularmovies.R;
 import com.example.eric.popularmovies.Utils.data.FavoriteContract;
 import com.example.eric.popularmovies.Utils.data.FavoriteDataLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_BACKDROP;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_DATE;
@@ -33,37 +37,26 @@ import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntr
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_RATE;
 import static com.example.eric.popularmovies.Utils.data.FavoriteContract.FavEntryList.COLUMN_TITLE;
 
-public class Favorite extends AppCompatActivity  implements FavoriteAdapter.ItemClickListener {
+public class FavoriteActivity extends AppCompatActivity implements FavoriteAdapter.ListItemClickListener {
 
+    @BindView(R.id.fav_rv)
     RecyclerView recyclerView;
-    GridLayoutManager layoutManager;
-    Toolbar toolbar;
-    FavoriteAdapter adapter;
-    ImageView fav_iv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
+        ButterKnife.bind(this);
 
-//        ButterKnife.bind(this);
-
-        toolbar = (Toolbar) findViewById(R.id.fav_toolbar);
-        setSupportActionBar(toolbar);
-        this.setTitle(R.string.fav);
-
-        // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        Toolbar toolbar = findViewById(R.id.fav_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            setTitle(R.string.title_favorites);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.fav_rv);
-
-        //For an unknown reason, "ButterKnife" is not binding some Views so decided to stop using it
-        fav_iv = (ImageView) findViewById(R.id.remove_fav);
-
-        getSupportLoaderManager().initLoader(1,null,cursorLoader);
+        getSupportLoaderManager().initLoader(1, null, cursorLoader);
 
         setLayoutManager();
 
@@ -72,22 +65,22 @@ public class Favorite extends AppCompatActivity  implements FavoriteAdapter.Item
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().restartLoader(1,null,cursorLoader);
+        getSupportLoaderManager().restartLoader(1, null, cursorLoader);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.fav_menu,menu);
+        inflater.inflate(R.menu.fav_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
             case R.id.delete_all:
                 deleteAllData();
@@ -96,56 +89,52 @@ public class Favorite extends AppCompatActivity  implements FavoriteAdapter.Item
         return true;
     }
 
-    public void setLayoutManager(){
+    public void setLayoutManager() {
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
 
+        GridLayoutManager layoutManager;
         if (!isTablet) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                layoutManager = new GridLayoutManager(Favorite.this, 2);
+                layoutManager = new GridLayoutManager(FavoriteActivity.this, 2);
                 recyclerView.setLayoutManager(layoutManager);
             } else {
-                layoutManager = new GridLayoutManager(Favorite.this, 4);
+                layoutManager = new GridLayoutManager(FavoriteActivity.this, 4);
                 recyclerView.setLayoutManager(layoutManager);
             }
         } else {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                layoutManager = new GridLayoutManager(Favorite.this, 4);
+                layoutManager = new GridLayoutManager(FavoriteActivity.this, 4);
                 recyclerView.setLayoutManager(layoutManager);
             } else {
-                layoutManager = new GridLayoutManager(Favorite.this, 6);
+                layoutManager = new GridLayoutManager(FavoriteActivity.this, 6);
                 recyclerView.setLayoutManager(layoutManager);
             }
         }
     }
 
-    //ItemClickListener
-    @Override
-    public void onItemClickListener(int position, List<MovieModel> models) {
-      sendFavIntentData(position,models);
-    }
 
     //deletes all favorites data from the database
-    public void deleteAllData(){
+    public void deleteAllData() {
         Uri uri = FavoriteContract.FavEntryList.FAVORITES_CONTENT_URI;
-        int fb = getContentResolver().delete(uri,null,null);
+        int fb = getContentResolver().delete(uri, null, null);
         recyclerView.invalidate();
-        if (fb != 0){
+        if (fb != 0) {
             Intent intent = getIntent();
             finish();
-            overridePendingTransition( 0, 0);
+            overridePendingTransition(0, 0);
             startActivity(intent);
-            overridePendingTransition( 0, 0);
+            overridePendingTransition(0, 0);
         }
-        getSupportLoaderManager().restartLoader(1,null,cursorLoader);
+        getSupportLoaderManager().restartLoader(1, null, cursorLoader);
     }
 
     /**
-     * @param position  the adapter position
-     * @param mdata Lists of Movie data
+     * @param position the adapter position
+     * @param mdata    Lists of Movie data
      * @description sends data to MovieDetails class
      */
-    private void sendFavIntentData(int position, List<MovieModel> mdata) {
-        MovieModel movie = mdata.get(position);
+    private void sendFavIntentData(int position, List<Movie> mdata) {
+        Movie movie = mdata.get(position);
         Intent intent = new Intent(this, MovieDetails.class);
         intent.putExtra("original_title", movie.getOriginalTitle());
         intent.putExtra("vote_average", movie.getVoteAverage());
@@ -164,15 +153,15 @@ public class Favorite extends AppCompatActivity  implements FavoriteAdapter.Item
     private LoaderManager.LoaderCallbacks<Cursor> cursorLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new FavoriteDataLoader(Favorite.this);
+            return new FavoriteDataLoader(FavoriteActivity.this);
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            List<MovieModel> favModel = new ArrayList<>();
+            List<Movie> favModel = new ArrayList<>();
 
             if (data != null) {
-                while (data.moveToNext()){
+                while (data.moveToNext()) {
                     int id_index = data.getColumnIndex(FavoriteContract.FavEntryList._ID);
                     int title_index = data.getColumnIndex(COLUMN_TITLE);
                     int genre_index = data.getColumnIndex(COLUMN_GENRE_ID);
@@ -187,13 +176,13 @@ public class Favorite extends AppCompatActivity  implements FavoriteAdapter.Item
                     int mGenre = data.getInt(genre_index);
                     String mDate = data.getString(date_index);
                     String mRate = data.getString(rate_index);
-                    String mOverview= data.getString(overview_index);
+                    String mOverview = data.getString(overview_index);
                     String mPoster = data.getString(poster_index);
                     String mBackDrop = data.getString(backdrop_index);
 
-                    MovieModel model =  new MovieModel(mTitle,mRate,mPoster,mOverview,mDate,mID,mGenre,mBackDrop);
+                    Movie model = new Movie(mTitle, mRate, mPoster, mOverview, mDate, mID, mGenre, mBackDrop);
                     favModel.add(model);
-                    adapter = new FavoriteAdapter(Favorite.this,Favorite.this,favModel);
+                    FavoriteAdapter adapter = new FavoriteAdapter(FavoriteActivity.this, FavoriteActivity.this, favModel);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setHasFixedSize(true);
                 }
@@ -204,8 +193,11 @@ public class Favorite extends AppCompatActivity  implements FavoriteAdapter.Item
 
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
-
         }
     };
 
+    @Override
+    public void onClick(int position, List<Movie> movies) {
+        sendFavIntentData(position, movies);
+    }
 }

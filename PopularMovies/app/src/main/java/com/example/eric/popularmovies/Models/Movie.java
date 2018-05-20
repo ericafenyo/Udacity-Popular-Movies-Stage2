@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by eric on 02/10/2017.
  */
 
-public class MovieModel implements Parcelable{
+public class Movie implements Parcelable{
     private String originalTitle;
     private String backdropPath;
     private String voteAverage;
@@ -19,10 +19,10 @@ public class MovieModel implements Parcelable{
     private int genreIds;
 
     //Constructor
-    public MovieModel() {
+    public Movie() {
     }
 
-    public MovieModel(String originalTitle, String voteAverage, String posterPath, String overview, String releaseDate, int id, int genreIds,String backdrop) {
+    public Movie(String originalTitle, String voteAverage, String posterPath, String overview, String releaseDate, int id, int genreIds, String backdrop) {
         this.originalTitle = originalTitle;
         this.voteAverage = voteAverage;
         this.posterPath = posterPath;
@@ -33,7 +33,7 @@ public class MovieModel implements Parcelable{
         this.backdropPath = backdrop;
     }
 
-    public MovieModel(String originalTitle, String backdropPath, String voteAverage, String posterPath, String overview, String releaseDate, int id, int totalPages, int genreIds) {
+    public Movie(String originalTitle, String backdropPath, String voteAverage, String posterPath, String overview, String releaseDate, int id, int totalPages, int genreIds) {
         this.originalTitle = originalTitle;
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
@@ -46,7 +46,7 @@ public class MovieModel implements Parcelable{
 
     }
 
-    protected MovieModel(Parcel in) {
+    protected Movie(Parcel in) {
         originalTitle = in.readString();
         backdropPath = in.readString();
         voteAverage = in.readString();
@@ -58,15 +58,15 @@ public class MovieModel implements Parcelable{
         genreIds = in.readInt();
     }
 
-    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
         @Override
-        public MovieModel createFromParcel(Parcel in) {
-            return new MovieModel(in);
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
         }
 
         @Override
-        public MovieModel[] newArray(int size) {
-            return new MovieModel[size];
+        public Movie[] newArray(int size) {
+            return new Movie[size];
         }
     };
 
