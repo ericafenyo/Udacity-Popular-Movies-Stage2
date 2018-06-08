@@ -35,6 +35,35 @@ By building this app, you will demonstrate your understanding of the foundationa
 * You will use adapters and custom list layouts to populate list views.
 * You will incorporate libraries to simplify the amount of code you need to write
 
+## Rubric
+### Common Project Requirements
+
+- [x] App is written solely in the Java Programming Language.
+
+- [x] Movies are displayed in the main layout via a grid of their corresponding movie poster thumbnails.
+
+- [x] UI contains an element (i.e a spinner or settings menu) to toggle the sort order of the movies by: most popular, highest rated.
+
+- [x] UI contains a screen for displaying the details for a selected movie.
+
+- [x] Movie details layout contains title, release date, movie poster, vote average, and plot synopsis.
+
+- [x] App utilizes stable release versions of all libraries, Gradle, and Android Studio.
+
+### User Interface - Function
+
+- [x] When a user changes the sort criteria (“most popular and highest rated”) the main view gets updated correctly.
+
+- [x] When a movie poster thumbnail is selected, the movie details screen is launched.
+
+### Network API Implementation
+
+- [x] In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort criteria specified in the settings menu.
+
+### General Project Guidelines
+
+- [x] App conforms to common standards found in the Android Nanodegree General Project Guidelines (NOTE: For Stage 1 of the Popular Movies App, it is okay if the app does not restore the data using onSaveInstanceState/onRestoreInstanceState)
+
 ## Stage 2 Project Overview
 Welcome back to Popular Movies! In this second and final stage, you’ll add additional functionality to the app you built in Stage 1.
 
@@ -49,3 +78,70 @@ You’ll add more information to your movie details view:
 
 ## What Will I Learn After Stage 2?
 * You will build a fully featured application that looks and feels natural on the latest Android operating system (Nougat, as of November 2016).
+
+
+## Rubric
+Common Project Requirements
+
+MEETS SPECIFICATIONS
+- [x] App is written solely in the Java Programming Language.
+
+- [x] App conforms to common standards found in the Android Nanodegree General Project Guidelines.
+
+- [x] App utilizes stable release versions of all libraries, Gradle, and Android Studio.
+
+User Interface - Layout
+
+MEETS SPECIFICATIONS
+- [x] UI contains an element (e.g., a spinner or settings menu) to toggle the sort order of the movies by: most popular, highest rated.
+
+- [x] Movies are displayed in the main layout via a grid of their corresponding movie poster thumbnails.
+
+- [x] UI contains a screen for displaying the details for a selected movie.
+
+- [x] Movie Details layout contains title, release date, movie poster, vote average, and plot synopsis.
+
+- [x] Movie Details layout contains a section for displaying trailer videos and user reviews.
+
+- [x] User Interface - Function
+
+MEETS SPECIFICATIONS
+- [x] When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
+
+- [x] When a movie poster thumbnail is selected, the movie details screen is launched.
+
+- [x] When a trailer is selected, app uses an Intent to launch the trailer.
+
+I- [x]n the movies detail screen, a user can tap a button (for example, a star) to mark it as a Favorite. Tap the button on a favorite movie will unfavorite it.
+
+Network API Implementation
+
+MEETS SPECIFICATIONS
+In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort criteria specified in the settings menu.
+
+- [x]App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
+
+- [x]App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
+
+Data Persistence
+
+MEETS SPECIFICATIONS
+- [x]The titles and IDs of the user’s favorite movies are stored in a native SQLite database and exposed via a ContentProvider
+OR
+stored using Room.
+
+- [x]Data is updated whenever the user favorites or unfavorites a movie. No other persistence libraries are used.
+
+- [x]When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the database.
+
+Android Architecture Components
+
+MEETS SPECIFICATIONS
+- [x] If Room is used, database is not re-queried unnecessarily. LiveData is used to observe changes in the database and update the UI accordingly.
+
+- [x]If Room is used, database is not re-queried unnecessarily after rotation. Cached LiveData from ViewModel is used instead.
+
+Suggestions to Make Your Project Stand Out!
+- [x]Extend the favorites database to store the movie poster, synopsis, user rating, and release date, and display them even when offline.
+
+- [x]Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
